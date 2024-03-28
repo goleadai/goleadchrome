@@ -24,10 +24,7 @@ export const Popup = () => {
         console.log('starting')
         const auth_token = await getCookie('https://twitter.com', 'auth_token')
         const ct0 = await getCookie('https://twitter.com', 'ct0')
-        const token = await getCookie('http://localhost:5678', 'token')
-        console.log('Token:', token)
-        console.log('CT0 Cookie:', ct0)
-        console.log('User Cookie:', auth_token)
+        const token = await getCookie('https://api.golead.ai', 'token')
         createUserAccount(auth_token, ct0, token)
       } catch (error) {
         setMessage('Make sure you are logged in to Twitter.')
@@ -36,7 +33,7 @@ export const Popup = () => {
     }
 
     const createUserAccount = async (auth_token, ct0, token) => {
-      const response = await fetch('http://localhost:5678/api/accounts/connect', {
+      const response = await fetch('https://api.golead.ai/api/accounts/connect', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,7 +1,7 @@
 {
   "name": "goleadchrome",
   "displayName": "GoLead Chrome Extension",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "author": "yunuscode",
   "description": "GoLead Chrome Extension",
   "type": "module",
