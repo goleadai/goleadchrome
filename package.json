@@ -1,9 +1,9 @@
 {
   "name": "goleadchrome",
-  "displayName": "GoLead Chrome Extension",
+  "displayName": "GoLead.ai",
   "version": "0.1.0",
   "author": "yunuscode",
-  "description": "GoLead Chrome Extension",
+  "description": "GoLead.ai companion extension",
   "type": "module",
   "license": "MIT",
   "keywords": [
