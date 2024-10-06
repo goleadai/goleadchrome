@@ -29,5 +29,5 @@ export default defineManifest({
     },
   ],
   permissions: ['cookies', 'activeTab', 'scripting'],
-  host_permissions: ['https://api.golead.ai/*', 'https://twitter.com/*'],
+  host_permissions: ['https://api.golead.ai/*', 'https://twitter.com/*', 'https://x.com/*'],
 })

@@ -4,8 +4,12 @@ import './Popup.css'
 export const Popup = () => {
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const connect = () => {
+  const connect = async () => {
+    setIsLoading(true)
+    setMessage(null)
+
     const getCookie = (server_url, name) => {
       return new Promise((resolve, reject) => {
         chrome.cookies.get({ url: server_url, name: name }, function (cookie) {
@@ -13,7 +17,7 @@ export const Popup = () => {
             resolve(cookie.value)
           } else {
             setMessage('Make sure you are logged in to Twitter.')
-            reject(new Error('Cookie not found'))
+            reject(new Error('Cookie not found' + name))
           }
         })
       })
@@ -22,18 +26,40 @@ export const Popup = () => {
     const accessUserCookie = async () => {
       try {
         console.log('starting')
-        const auth_token = await getCookie('https://twitter.com', 'auth_token')
-        const ct0 = await getCookie('https://twitter.com', 'ct0')
+        let auth_token;
+
+        try {
+          auth_token = await getCookie('https://twitter.com', 'auth_token')
+        } catch (error) {
+          console.log('error', error)
+        }
+
+        let ct0
+
+        try {
+          ct0 = await getCookie('https://twitter.com', 'ct0')
+        } catch (error) {
+          console.log('error', error)
+        }
+
+        if (!auth_token || !ct0) {
+          auth_token = await getCookie('https://x.com', 'auth_token')
+          ct0 = await getCookie('https://x.com', 'ct0')
+        }
+
         const token = await getCookie('https://api.golead.ai', 'token')
-        createUserAccount(auth_token, ct0, token)
+        await createUserAccount(auth_token, ct0, token)
       } catch (error) {
-        setMessage('Make sure you are logged in to Twitter.')
+        setMessage('Make sure you are logged in to Twitter and GoLead.')
         console.error('Error accessing cookie:', error)
+      } finally {
+        setIsLoading(false)
       }
     }
 
     const createUserAccount = async (auth_token, ct0, token) => {
-      const response = await fetch('https://api.golead.ai/api/accounts/connect', {
+      const url = 'https://api.golead.ai/api/accounts/connect'
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,7 +77,7 @@ export const Popup = () => {
       }
     }
 
-    accessUserCookie()
+    await accessUserCookie()
   }
 
   useEffect(() => {
@@ -116,8 +142,8 @@ export const Popup = () => {
       {message && <p className="error">{message}</p>}
 
       {!message && (
-        <button className="button" onClick={connect}>
-          Connect
+        <button className="button" onClick={connect} disabled={isLoading}>
+          {isLoading ? 'Connecting...' : 'Connect'}
         </button>
       )}
     </main>
