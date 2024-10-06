@@ -16,7 +16,6 @@ export const Popup = () => {
           if (cookie) {
             resolve(cookie.value)
           } else {
-            setMessage('Make sure you are logged in to Twitter.')
             reject(new Error('Cookie not found' + name))
           }
         })
@@ -43,8 +42,12 @@ export const Popup = () => {
         }
 
         if (!auth_token || !ct0) {
-          auth_token = await getCookie('https://x.com', 'auth_token')
-          ct0 = await getCookie('https://x.com', 'ct0')
+          try {
+            auth_token = await getCookie('https://x.com', 'auth_token')
+            ct0 = await getCookie('https://x.com', 'ct0')
+          } catch (error) {
+            console.log('error', error)
+          }
         }
 
         const token = await getCookie('https://api.golead.ai', 'token')
